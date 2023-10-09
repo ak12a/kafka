@@ -9,7 +9,7 @@ Linux machine:
 --
 
 ``` bash 
-wget https://www.apache.org/dyn/closer.cgi?path=/kafka/3.2.2/kafka_2.13-3.2.2.tgz
+wget https://archive.apache.org/dist/kafka/3.3.2/kafka_2.12-3.3.2.tgz
 
 sudo tar -xvf kafka_2.12-3.3.2.tgz -C /opt/
 
