@@ -69,8 +69,9 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       # List all files and PWD
-      - name: check all repo ddata before execution docker build 
+      - name: check prenent working directory
         run: pwd 
+      - name: check all repo ddata before execution docker build   
         run: ls 
       
       # Build and push Docker image with Buildx (don't push on PR)
