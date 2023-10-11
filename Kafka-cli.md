@@ -131,7 +131,7 @@ kafka-topics.sh --bootstrap-server kafka-server-1:9092  --list
 
 ```bash 
  kafka-console-producer.sh --bootstrap-server kafka-server-1:9092 --topic third_topic  --property parse.key=true --property key.separator=: 
- ```
+```
  `Example:`
   
  > Name:Arvind, 
@@ -142,3 +142,73 @@ kafka-topics.sh --bootstrap-server kafka-server-1:9092  --list
 
 
  `Check on the console, You will find Key=name and value=Arvind `
+
+ ===========================
+ ## `Consumer`
+ ===========================
+
+ * 1. `Comsume the tail of the topics`
+ * 2. `Consume the begining of the topics`
+ * 3. `Show both key and value in the outpu` 
+
+`Examples:` 
+
+## `Create a topic with 3 partitions`
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 --topic topic_three --partitions 3 --create 
+``` 
+
+## `Produce the message in topics`  ( Open a new termilan and execute the below command)
+* Method 1  In a single partition.
+
+`Note:  In single partition up to 16 KB of data and then send to the other partitions`
+
+```bash
+kafka-console-producer.sh --bootstrap-server localhost:9092 --topic topic_three 
+``` 
+
+* `Method 2  In a RoundRobin partition mechenisam`
+
+`Note: In ROundRobin partitions mechenism it will produce the message once at a time in a single partition up to 16 KB of data and then send to the other partitions. `  
+
+```bash
+kafka-console-producer.sh --bootstrap-server localhost:9092  --producer-property partitioner.calss=org.apache.kafka-client-producer.RoundRobinPartitioner --topic topic_three 
+```
+
+
+
+## `Consume the Topics `  (Open a new terminal and execute the command)
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic_three 
+``` 
+
+## `Consume the Topics from nbegning `  (Open a new terminal and execute the command)
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic_three --from-beginning
+``` 
+
+## ` Consume the topics and print the timestamp,key,value,and partitins number of a topics  in consumer`
+
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic_three  --formatter kafka.tools.DefaultMessageFormatter --property print.timestamp=true --property print.key=true --property print.value=true --property print.partition=true --from-beginning
+``` 
+
+
+## Lets consume partition one ( without roundrobin producer property)
+1. `Create a topic with 3 partitions` 
+
+```bash
+kafka-topics.sh --bootstrap-server localhost:9092 --topic topic_one  --partitions 3 --create 
+``` 
+
+2. `Produce message in topics` ( In a new shell)
+
+```bash
+kafka-console-producer.sh --bootstrap-server localhost:9092 --topic topic_one 
+``` 
+
+3. ` Consume the topics and print the timestamp,key,value,and partitins number of a topics  in consumer`
+
+```bash
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic_one  --formatter kafka.tools.DefaultMessageFormatter --property print.timestamp=true --property print.key=true --property print.value=true --property print.partition=true --from-beginning
+```
