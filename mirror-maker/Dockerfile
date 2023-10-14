@@ -11,7 +11,7 @@ RUN apt-get update  && apt-get install -y netcat wget && \
     mv kafka_${SCALA_VERSION}-${KAFKA_VERSION} kafka && \
     rm -rf kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz 
 
-ENV PATH=$PATH:/opt/kafka/bin
-COPY  ./mirror-maker/connect-mirror-maker.properties /opt/kafka/config 
-CMD [ "/bin/connect-mirror-maker.sh",  "/config/connect-mirror-maker.properties" ]
+ENV  PATH=$PATH:/opt/kafka/bin
+COPY connect-mirror-maker.properties /opt/kafka/config 
+CMD  [ "/bin/connect-mirror-maker.sh",  "/config/connect-mirror-maker.properties" ]
 # ENTRYPOINT [ "/opt/kafka/bin/runMirrorMaker.sh" ]
