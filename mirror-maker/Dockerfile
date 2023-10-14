@@ -13,7 +13,7 @@ RUN apt-get update  && apt-get install -y netcat wget && \
 
 ENV PATH=$PATH:/opt/kafka/bin
 
-COPY connect-mirror-maker.properties /opt/kafka/config 
+COPY  ./mirror-maker/connect-mirror-maker.properties /opt/kafka/config 
 # COPY runMirrorMaker.sh /opt/kafka/bin
 
 
