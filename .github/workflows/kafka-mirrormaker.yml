@@ -40,10 +40,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Change mirrormaker repo directory
-        run: cd mirror-maker && pwd && ls 
-
-      # Install the cosign tool except on PR
+        # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
         if: github.event_name != 'pull_request'
@@ -82,10 +79,12 @@ jobs:
       
 
       # List all files and PWD
+      - name: swithc directory
+        run : cd mirror-maker
       - name: check prenent working directory
-        run: pwd 
+        run:  pwd 
       - name: check all repo ddata before execution docker build   
-        run: ls 
+        run:  ls      
       
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
