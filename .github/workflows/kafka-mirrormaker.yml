@@ -91,7 +91,7 @@ jobs:
       
       - name: Build and push Docker image
         id: build-and-push
-        run: docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-mirrormaker:${{env.IMAGE_TAG}} -f mirror-maker/Dockerfile .
+        run: docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-mirrormaker:${{env.IMAGE_TAG}} .
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
