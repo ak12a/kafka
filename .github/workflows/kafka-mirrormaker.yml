@@ -9,12 +9,12 @@ on:
   # schedule:
   #   - cron: '16 3 * * *'
   push:
-    branches: [ "main" ]
+    branches: [ "kafka-mirror" ]
     # Publish semver tags as releases.
     # tags: 
     #    - 'v[0-9]+.[0-9]+.[0-9]+'
   pull_request:
-    branches: [ "main" ]
+    branches: [ "kafka-mirror" ]
     
 
 env:
@@ -95,8 +95,6 @@ jobs:
         with:
           context: .
           push:  ${{ github.event_name != 'pull_request' }}
-          #push: ${{ github.event.base_ref =='refs/heads/main' && github.ref_type == 'tag' && !startsWith(github.ref, 'refs/tags/v0.')}}
-          #tags: ${{ steps.meta.outputs.tags }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-mirrormaker:${{env.IMAGE_TAG}}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
