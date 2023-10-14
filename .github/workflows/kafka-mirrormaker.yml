@@ -82,8 +82,8 @@ jobs:
       
 
       # List all files and PWD
-      - name: swithc directory
-        run : cd mirror-maker
+      # - name: swithc directory
+      #   run : cd mirror-maker
       - name: check prenent working directory
         run:  pwd 
       - name: check all repo ddata before execution docker build   
