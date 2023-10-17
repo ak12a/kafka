@@ -1,0 +1,140 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mirror-maker.properties
+  namespace: kafka
+data:
+  connect-mirror-maker.properties: >-
+    # Licensed to the Apache Software Foundation (ASF) under A or more
+
+    # contributor license agreements.  See the NOTICE file distributed with
+
+    # this work for additional information regarding copyright ownership.
+
+    # The ASF licenses this file to You under the Apache License, Version 2.0
+
+    # (the "License"); you may not use this file except in compliance with
+
+    # the License.  You may obtain a copy of the License at
+
+    # 
+
+    #    http://www.apache.org/licenses/LICENSE-2.0
+
+    # 
+
+    # Unless required by applicable law or agreed to in writing, software
+
+    # distributed under the License is distributed on an "AS IS" BASIS,
+
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+    # See the License for the specific language governing permissions and
+
+    # limitations under the License.
+
+    # see org.apache.kafka.clients.consumer.ConsumerConfig for more details
+
+
+    # Sample MirrorMaker 2.0 top-level configuration file
+
+    # Run with ./bin/connect-mirror-maker.sh connect-mirror-maker.properties 
+
+
+    # specify any number of cluster aliases
+
+    clusters = A, B
+
+
+    # connection information for each cluster
+    # This is a comma separated host:port pairs for each cluster
+    # for e.g. "A_host1:9092, A_host2:9092, A_host3:9092"
+
+    A.bootstrap.servers = ha-kafka-demo.default:9092
+    B.bootstrap.servers = ha-kafka-demo.kafka:9092
+
+    # enable and configure individual replication flows
+
+    A->B.enabled = true
+
+    # regex which defines which topics gets replicated. For eg "foo-.*"
+
+    A->B.topics = .*
+    B->A.enabled = false
+    B->A.topics = 
+
+
+    # Setting replication factor of newly created remote topics
+    replication.factor=3    # Plesae change the replication factor according to use 
+
+
+    ############################# Internal Topic Settings ############
+
+    # The replication factor for mm2 internal topics "heartbeats",
+    "B.checkpoints.internal" and
+
+    # "mm2-offset-syncs.B.internal"
+    # For anything other than development testing, a value greater than 1 is
+    recommended to ensure availability such as 3.
+    #checkpoints.topic.replication.factor=
+    #heartbeats.topic.replication.factor=
+    offset-syncs.topic.replication.factor=3
+
+
+    # The replication factor for connect internal topics
+    "mm2-configs.B.internal", "mm2-offsets.B.internal" and
+    # "mm2-status.B.internal"
+
+    # For anything other than development testing, a value greater than 1 is
+    recommended to ensure availability such as 3.
+    offset.storage.replication.factor=3
+    #status.storage.replication.factor=
+    #config.storage.replication.factor=
+
+    # customize as needed
+    # replication.policy.separator = _
+    # sync.topic.acls.enabled = false
+    # emit.heartbeats.interval.seconds = 5
+    replication.policy.separator=
+    source.cluster.alias=
+    target.cluster.alias=
+    #replication.policy.class =
+    org.apache.kafka.connect.mirror.MigrationReplicationPolicy
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-mirror-maker
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-mirror-maker
+  template:
+    metadata:
+      labels:
+        app: kafka-mirror-maker
+    spec:
+      volumes:
+        - name: mirror-maker-config
+          configMap:
+            name: mirror-maker.properties
+            defaultMode: 420
+      containers:
+        - name: kafka-mirrormaker
+          image: ghcr.io/ak12a/kafka-mirrormaker:2.3.3-17
+          env:
+            - name: LOG_LEVEL
+              value: DEBUG
+          resources: {}
+          volumeMounts:
+            - name: mirror-maker-config
+              mountPath: /opt/kafka/config/connect-mirror-maker.properties
+              subPath: connect-mirror-maker.properties
+          imagePullPolicy: IfNotPresent
+      imagePullSecrets:
+        - name: ghcr-secret
+
+
