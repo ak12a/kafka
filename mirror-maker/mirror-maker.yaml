@@ -46,9 +46,9 @@ data:
     clusters = A, B
 
 
-    # connection information for each cluster
-    # This is a comma separated host:port pairs for each cluster
-    # for e.g. "A_host1:9092, A_host2:9092, A_host3:9092"
+    # connection information for each cluster # This is a comma separated
+    host:port pairs for each cluster # for e.g. "A_host1:9092, A_host2:9092,
+    A_host3:9092"
 
     A.bootstrap.servers = ha-kafka-demo.default:9092
 
@@ -63,12 +63,13 @@ data:
     A->B.topics = .*
 
     B->A.enabled = false
-    
+
     B->A.topics = 
 
 
     # Setting replication factor of newly created remote topics
-    replication.factor=3    # Plesae change the replication factor according to use 
+    replication.factor=3    # Plesae change the replication factor according to
+    use 
 
 
     ############################# Internal Topic Settings ############
@@ -76,38 +77,41 @@ data:
     # The replication factor for mm2 internal topics "heartbeats",
     "B.checkpoints.internal" and
 
-    # "mm2-offset-syncs.B.internal"
-    # For anything other than development testing, a value greater than 1 is
-    recommended to ensure availability such as 3.
-    #checkpoints.topic.replication.factor=
+    # "mm2-offset-syncs.B.internal" # For anything other than development
+    testing, a value greater than 1 is recommended to ensure availability such
+    as 3. #checkpoints.topic.replication.factor=
     #heartbeats.topic.replication.factor=
     offset-syncs.topic.replication.factor=3
 
 
     # The replication factor for connect internal topics
-    "mm2-configs.B.internal", "mm2-offsets.B.internal" and
-    # "mm2-status.B.internal"
+    "mm2-configs.B.internal", "mm2-offsets.B.internal" and #
+    "mm2-status.B.internal"
 
     # For anything other than development testing, a value greater than 1 is
     recommended to ensure availability such as 3.
-    
-    offset.storage.replication.factor=3
-    
-    #status.storage.replication.factor=
-    #config.storage.replication.factor=
 
-    # customize as needed
-    # replication.policy.separator = _
-    # sync.topic.acls.enabled = false
-    # emit.heartbeats.interval.seconds = 5
-    
+    offset.storage.replication.factor=3
+
+    #status.storage.replication.factor= #config.storage.replication.factor=
+
+    # customize as needed # replication.policy.separator = _ #
+    sync.topic.acls.enabled = false # emit.heartbeats.interval.seconds = 5
+
     replication.policy.separator=
-    
+
     source.cluster.alias=
-    
+
     target.cluster.alias=
-    
-    replication.policy.class = org.apache.kafka.connect.mirror.MigrationReplicationPolicy
+
+    sync.topic.configs.interval.seconds=5
+
+    refresh.topics.enabled=true
+
+    refresh.topics.interval.seconds=5
+
+    #replication.policy.class =
+    org.apache.kafka.connect.mirror.MigrationReplicationPolicy
 
 ---
 apiVersion: apps/v1
@@ -132,7 +136,12 @@ spec:
             defaultMode: 420
       containers:
         - name: kafka-mirrormaker
-          image: ghcr.io/ak12a/kafka-mirrormaker:2.3.3-17
+          image: ghcr.io/ak12a/kafka:2.3.3-12
+          command:
+            - sh
+            - "-c"
+            - "/opt/kafka/bin/connect-mirror-maker.sh /opt/kafka/config/connect-mirror-maker.properties" 
+
           env:
             - name: LOG_LEVEL
               value: DEBUG
@@ -142,7 +151,7 @@ spec:
               mountPath: /opt/kafka/config/connect-mirror-maker.properties
               subPath: connect-mirror-maker.properties
           imagePullPolicy: IfNotPresent
-      imagePullSecrets:
-        - name: ghcr-secret
+     
+
 
 
