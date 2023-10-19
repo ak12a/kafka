@@ -51,6 +51,7 @@ data:
     # for e.g. "A_host1:9092, A_host2:9092, A_host3:9092"
 
     A.bootstrap.servers = ha-kafka-demo.default:9092
+
     B.bootstrap.servers = ha-kafka-demo.kafka:9092
 
     # enable and configure individual replication flows
@@ -60,7 +61,9 @@ data:
     # regex which defines which topics gets replicated. For eg "foo-.*"
 
     A->B.topics = .*
+
     B->A.enabled = false
+    
     B->A.topics = 
 
 
@@ -87,7 +90,9 @@ data:
 
     # For anything other than development testing, a value greater than 1 is
     recommended to ensure availability such as 3.
+    
     offset.storage.replication.factor=3
+    
     #status.storage.replication.factor=
     #config.storage.replication.factor=
 
@@ -95,11 +100,14 @@ data:
     # replication.policy.separator = _
     # sync.topic.acls.enabled = false
     # emit.heartbeats.interval.seconds = 5
+    
     replication.policy.separator=
+    
     source.cluster.alias=
+    
     target.cluster.alias=
-    #replication.policy.class =
-    org.apache.kafka.connect.mirror.MigrationReplicationPolicy
+    
+    replication.policy.class = org.apache.kafka.connect.mirror.MigrationReplicationPolicy
 
 ---
 apiVersion: apps/v1
