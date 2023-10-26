@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mirror-maker.properties
+data:
+  connect-mirror-maker.properties: |-
+    # specify any number of cluster aliases
+    clusters = A, B
+
+    # connection information for each cluster
+    # This is a comma separated host:port pairs for each cluster
+    # for example. "A_host1:9092, A_host2:9092, A_host3:9092" and you can see
+    #the exact host name on Ambari -> Hosts 
+    A.bootstrap.servers = ha-kafka-demo.default:9092 
+    B.bootstrap.servers = ha-kafka-demo.kafka:9092
+    # enable and configure individual replication flows
+    A->B.enabled = true
+    # enable this for both side replication
+    B->A.enabled = false
+    # regex which defines which topics gets replicated. For eg "foo-.*"
+    A->B.topics = .*
+    B->A.topics = 
+
+    # Setting replication factor of newly created remote topics
+    replication.factor = 3 
+
+    ############################# Internal Topic Settings  #############################
+    # The replication factor for mm2 internal topics "heartbeats", "B.checkpoints.internal" and
+    # "mm2-offset-syncs.B.internal"
+    # For anything other than development testing, a value greater than 1 is recommended to ensure availability such as 3.
+    checkpoints.topic.replication.factor=3
+
+    heartbeats.topic.replication.factor=3
+
+    offset-syncs.topic.replication.factor=3
+
+    # The replication factor for connect internal topics "mm2-configs.B.internal", "mm2-offsets.B.internal" and
+    # "mm2-status.B.internal"
+    # For anything other than development testing, a value greater than 1 is recommended to ensure availability such as 3.
+    
+    offset.storage.replication.factor=3
+    status.storage.replication.factor=3
+    config.storage.replication.factor=3
+
+    ################ customize as needed############################
+    ############ Topics replication confiuration ###########
+    topics.blacklist=   
+    topics.exclude=
+    sync.topic.configs.enabled = true
+    sync.topic.configs.interval.seconds = 5
+
+    ############ Group /consumer group  replication Confuration ###########
+    groups= .*
+    emit.checkpoints.enabled = true 
+    sync.group.offsets.enabled=true 
+    sync.group.offsets.interval.seconds=30
+    #B->A.sync.group.offsets.enabled   = true 
+    #B->A.sync.group.offsets.interval.seconds=30
+
+    ####################  Cluster alias setup############
+    replication.policy.separator=
+    source.cluster.alias=
+    target.cluster.alias=
+    ##############
+    refresh.groups.enabled = true
+    refresh.groups.interval.seconds=5
+    refresh.topics.enabled = true
+    refresh.topics.interval.seconds=5
