@@ -212,3 +212,5 @@ kafka-console-producer.sh --bootstrap-server localhost:9092 --topic topic_one
 ```bash
 kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic topic_one  --formatter kafka.tools.DefaultMessageFormatter --property print.timestamp=true --property print.key=true --property print.value=true --property print.partition=true --from-beginning
 ```
+
+4. ` Test`
